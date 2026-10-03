@@ -17,7 +17,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PANEL_DIR=""
 DO_FULL=0
 DO_UNINSTALL=0
-BACKUP_DIR="$SCRIPT_DIR/backups"
+# Backup disimpan di folder repo, kecuali di-override via env (dipakai oleh
+# remote-install.sh yang berjalan dari temp sementara lalu dihapus).
+BACKUP_DIR="${NB_BACKUP_DIR:-$SCRIPT_DIR/backups}"
 TS="$(date +%Y%m%d-%H%M%S)"
 
 # Warna
