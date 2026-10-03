@@ -8,6 +8,20 @@ Cakupan: **area klien, area admin (legacy AdminLTE), dan halaman auth** untuk Pt
 
 ## Cara pasang
 
+### Cara cepat — jalankan installer (disarankan)
+
+Installer mendeteksi panel, membackup file asli, menyalin CSS, mempatch blade, dan membersihkan cache — sekali jalan, idempoten, dan bisa dibatalkan.
+
+```bash
+# di server panel (atau clone repo ini di mana saja lalu arahkan ke panel)
+./install.sh                     # pasang tema (mode inject)
+./install.sh --full              # sekalian patch source React + rebuild (hasil 100%)
+./install.sh --uninstall         # kembalikan ke tema default
+./install.sh -d /path/panel      # tentukan direktori panel manual
+```
+
+Installer otomatis mencari panel di `/var/www/pterodactyl`, `/var/www/panel`, `/opt/pterodactyl`, `/srv/pterodactyl`, atau direktori aktif. Backup disimpan di folder `backups/` repo ini.
+
 ### Opsi A — CSS inject saja (tanpa rebuild, cepat)
 
 Dipakai untuk hasil instan. Menjangkau sebagian besar komponen (class utility global + admin legacy), tapi tidak mengubah komponen React yang memakai CSS module ter-hash.
