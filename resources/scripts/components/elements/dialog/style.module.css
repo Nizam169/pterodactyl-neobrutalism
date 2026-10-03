@@ -1,0 +1,54 @@
+.container {
+    @apply flex min-h-full items-center justify-center p-4 text-center;
+}
+
+.panel {
+    @apply relative bg-gray-600 rounded max-w-xl w-full mx-auto shadow-lg text-left;
+    @apply ring-4 ring-gray-800 ring-opacity-80;
+    /* [neobrutalism] neon-edged slab */
+    background: #161616 !important;
+    border: 2px solid #a3e635 !important;
+    border-radius: 3px !important;
+    box-shadow: 10px 10px 0 rgba(163, 230, 53, .18) !important;
+}
+
+.title {
+    @apply font-header text-xl font-medium mb-2 text-gray-50 pr-4;
+    color: #a3e635 !important;
+    font-weight: 800 !important;
+}
+
+.close_icon {
+    @apply w-5 h-5 group-hover:rotate-90 transition-transform duration-100;
+    color: #a3e635 !important;
+}
+
+.dialog_icon {
+    @apply flex items-center justify-center w-10 h-10 rounded-full mr-4;
+    border-radius: 3px !important;
+    border: 2px solid #000 !important;
+
+    &.danger {
+        @apply bg-red-500 text-red-50;
+        background: #f472b6 !important;
+        color: #0a0a0a !important;
+    }
+
+    &.warning {
+        @apply bg-yellow-600 text-yellow-50;
+        background: #facc15 !important;
+        color: #0a0a0a !important;
+    }
+
+    &.success {
+        @apply bg-green-600 text-green-50;
+        background: #a3e635 !important;
+        color: #0a0a0a !important;
+    }
+
+    &.info {
+        @apply bg-primary-500 text-primary-50;
+        background: #22d3ee !important;
+        color: #0a0a0a !important;
+    }
+}

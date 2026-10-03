@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pterodactyl — Neobrutalism Dark (Preview)</title>
+<style>
+/* ── tokens (mirror of neobrutalism.css) ─────────────────────────────── */
+:root{
+  --nb-bg:#0a0a0a; --nb-bg-alt:#111; --nb-surface:#161616; --nb-surface-2:#1c1c1c; --nb-surface-3:#232323;
+  --nb-line:#2a2a2a; --nb-line-strong:#3d3d3d;
+  --nb-text:#ededed; --nb-text-dim:#a3a3a3; --nb-text-faint:#6b6b6b;
+  --nb-lime:#a3e635; --nb-lime-deep:#65a30d; --nb-cyan:#22d3ee; --nb-magenta:#f472b6;
+  --nb-magenta-deep:#be185d; --nb-yellow:#facc15;
+  --nb-radius:3px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--nb-bg); color:var(--nb-text);
+  font-family:"IBM Plex Sans",Roboto,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  letter-spacing:.01em;
+}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em;margin:0 0 .5rem}
+p{color:var(--nb-text-dim)}
+.wrap{max-width:1080px;margin:0 auto;padding:2rem 1.5rem}
+::selection{background:var(--nb-lime);color:#0a0a0a}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--nb-bg-alt)}
+::-webkit-scrollbar-thumb{background:var(--nb-lime-deep);border:3px solid var(--nb-bg-alt)}
+
+/* ── nav bar ─────────────────────────────────────────────────────────── */
+.nav{
+  background:#000;border-bottom:2px solid var(--nb-lime);
+  box-shadow:0 4px 0 rgba(163,230,53,.14);overflow-x:auto;
+}
+.nav-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;height:3.5rem}
+.nav-logo{flex:1;color:var(--nb-lime);font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+  font-size:1.4rem;text-decoration:none;padding:0 1rem}
+.nav-links{display:flex;align-items:center;height:100%;gap:0}
+.nav-links a,.nav-links button{
+  display:flex;align-items:center;height:100%;padding:0 1.2rem;color:var(--nb-text-dim);
+  text-decoration:none;background:none;border:0;cursor:pointer;font:inherit;position:relative;
+  transition:background .12s linear;
+}
+.nav-links a:hover,.nav-links a.active{background:var(--nb-lime);color:#0a0a0a}
+.nav-links a.active::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--nb-magenta)}
+
+/* ── primitives ──────────────────────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;cursor:pointer;
+  background:var(--nb-lime);color:#0a0a0a;border:2px solid #000;border-radius:var(--nb-radius);
+  box-shadow:4px 4px 0 rgba(0,0,0,.9);font-weight:700;letter-spacing:.02em;
+  transition:transform .08s linear,box-shadow .08s linear,background .12s linear;
+}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(0,0,0,.9);background:var(--nb-cyan)}
+.btn:active{transform:translate(1px,1px);box-shadow:2px 2px 0 rgba(0,0,0,.9)}
+.btn.danger{background:var(--nb-magenta)}
+.btn.danger:hover{background:var(--nb-magenta-deep)}
+.btn.ghost{background:var(--nb-surface-2);color:var(--nb-text)}
+.btn.ghost:hover{background:var(--nb-surface-3)}
+
+input,select,textarea{
+  background:var(--nb-surface);border:2px solid var(--nb-line-strong);border-radius:var(--nb-radius);
+  color:var(--nb-text);padding:.55rem .9rem;box-shadow:3px 3px 0 rgba(0,0,0,.7);
+  font:inherit;transition:transform .08s linear,box-shadow .08s linear,border-color .12s linear;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--nb-lime);box-shadow:4px 4px 0 rgba(163,230,53,.35);transform:translate(-1px,-1px);
+}
+label{display:block;color:var(--nb-text-dim);font-weight:700;text-transform:uppercase;font-size:.7rem;
+  letter-spacing:.08em;margin:.9rem 0 .3rem}
+
+.card{
+  background:var(--nb-surface);border:2px solid var(--nb-line-strong);border-radius:var(--nb-radius);
+  box-shadow:5px 5px 0 #000;padding:1.25rem;margin-bottom:1.5rem;
+}
+.card h3{color:var(--nb-lime)}
+
+table{width:100%;border-collapse:collapse;border:2px solid var(--nb-line-strong);border-radius:var(--nb-radius);overflow:hidden}
+thead th{background:#000;color:var(--nb-lime);font-weight:800;text-transform:uppercase;font-size:.72rem;
+  letter-spacing:.08em;text-align:left;padding:.6rem .8rem;border-bottom:2px solid var(--nb-lime)}
+tbody td{background:var(--nb-surface);border-bottom:1px solid var(--nb-line);color:var(--nb-text-dim);padding:.55rem .8rem}
+tbody tr:hover td{background:var(--nb-surface-2)}
+tbody tr:last-child td{border-bottom:0}
+
+.badge{display:inline-block;padding:.15rem .5rem;background:var(--nb-lime-deep);color:#0a0a0a;
+  font-weight:700;font-size:.7rem;border:1px solid #000;border-radius:2px}
+.badge.cyan{background:var(--nb-cyan)} .badge.mag{background:var(--nb-magenta)} .badge.yel{background:var(--nb-yellow)}
+
+.progress{height:.6rem;background:var(--nb-surface-3);border:2px solid #000;border-radius:var(--nb-radius);overflow:hidden}
+.progress > div{height:100%;background:var(--nb-lime)}
+
+.term{
+  background:#000;border:2px solid var(--nb-lime-deep);border-radius:var(--nb-radius);
+  box-shadow:5px 5px 0 #000;padding:1rem;font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:.82rem;line-height:1.5;
+}
+.term .pr{color:var(--nb-lime)} .term .ok{color:var(--nb-cyan)} .term .warn{color:var(--nb-yellow)}
+
+.modal-back{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:50}
+.modal-back.open{display:flex}
+.modal{
+  background:var(--nb-surface);border:2px solid var(--nb-lime);border-radius:var(--nb-radius);
+  box-shadow:10px 10px 0 rgba(163,230,53,.18);max-width:30rem;width:calc(100% - 2rem);padding:0;
+}
+.modal-h{padding:1.1rem 1.25rem .2rem} .modal-h h3{color:var(--nb-lime)}
+.modal-b{padding:0 1.25rem 1.1rem} .modal-b p{margin:.2rem 0 0}
+.modal-f{background:var(--nb-surface-2);border-top:2px solid var(--nb-line);padding:.75rem 1.25rem;display:flex;justify-content:flex-end;gap:.6rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.5rem}
+.row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+hr{border:0;border-top:2px solid var(--nb-line);margin:2rem 0}
+.foot{color:var(--nb-text-faint);font-size:.8rem;margin-top:2rem;text-align:center}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="nav-logo" href="#">MY&nbsp;PANEL</a>
+    <div class="nav-links">
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Admin</a>
+      <a href="#">Account</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <h1>Neobrutalism Dark — Pterodactyl</h1>
+  <p>Preview statis komponen utama. Bidang hitam pekat, border 2px solid, hard offset shadow tanpa blur, sudut tajam, aksen neon.</p>
+
+  <hr>
+
+  <div class="grid">
+    <div class="card">
+      <h3>CPU Usage</h3>
+      <div class="progress"><div style="width:64%"></div></div>
+      <p style="margin-top:.5rem">64% dari 200%</p>
+    </div>
+    <div class="card">
+      <h3>RAM Usage</h3>
+      <div class="progress"><div style="width:41%"></div></div>
+      <p style="margin-top:.5rem">2.5 GB dari 6 GB</p>
+    </div>
+    <div class="card">
+      <h3>Status</h3>
+      <div class="row">
+        <span class="badge">Running</span>
+        <span class="badge cyan">CPU 64%</span>
+        <span class="badge mag">Restarting…</span>
+        <span class="badge yel">Backup</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Buttons</h3>
+    <div class="row">
+      <button class="btn">Start</button>
+      <button class="btn">Restart</button>
+      <button class="btn danger">Kill</button>
+      <button class="btn ghost">Settings</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Form</h3>
+      <label>Server Name</label>
+      <input type="text" value="my-awesome-server" style="width:100%">
+      <label>Egg</label>
+      <select style="width:100%">
+        <option>Minecraft Paper</option>
+        <option>Source Engine</option>
+      </select>
+      <label>Startup Command</label>
+      <textarea rows="3" style="width:100%">java -Xms128M -Xmx1024M -jar server.jar</textarea>
+    </div>
+
+    <div class="card">
+      <h3>Console</h3>
+      <div class="term">
+        <div><span class="pr">root@panel</span>:<span class="ok">~</span>$ ./start.sh</div>
+        <div>Starting server on <span class="ok">0.0.0.0:25565</span>…</div>
+        <div>Loading libraries, please wait…</div>
+        <div><span class="warn">[WARN]</span> Legacy plugin detected: old-economy.jar</div>
+        <div>Done (<span class="ok">3.214s</span>)! For help, type "help"</div>
+        <div><span class="pr">&gt;</span> <span style="background:var(--nb-lime);color:#000">&nbsp;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Servers</h3>
+    <table>
+      <thead><tr><th>Server</th><th>Node</th><th>Players</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>survival-01</td><td>Node A</td><td>12/20</td><td><span class="badge">Running</span></td><td><button class="btn ghost" onclick="document.getElementById('m').classList.add('open')">Manage</button></td></tr>
+        <tr><td>creative-02</td><td>Node B</td><td>4/10</td><td><span class="badge cyan">Idle</span></td><td><button class="btn ghost">Manage</button></td></tr>
+        <tr><td>test-server</td><td>Node A</td><td>0/5</td><td><span class="badge mag">Offline</span></td><td><button class="btn ghost">Manage</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="foot">Tema neobrutalisme gelap · Pterodactyl Panel · preview statis</p>
+</div>
+
+<!-- modal -->
+<div class="modal-back" id="m">
+  <div class="modal">
+    <div class="modal-h"><h3>Restart server?</h3></div>
+    <div class="modal-b"><p>Server akan dimatikan dan dinyalakan kembali. Pemain yang sedang online akan terputus.</p></div>
+    <div class="modal-f">
+      <button class="btn ghost" onclick="document.getElementById('m').classList.remove('open')">Batal</button>
+      <button class="btn" onclick="document.getElementById('m').classList.remove('open')">Restart</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

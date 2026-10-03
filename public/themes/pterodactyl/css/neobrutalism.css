@@ -1,0 +1,603 @@
+/* ============================================================================
+ * Pterodactyl Panel — Neobrutalism Dark Theme
+ *
+ * A dark neobrutalist skin: pitch-black surfaces, thick solid borders,
+ * hard offset shadows (no blur), sharp corners, and neon accents.
+ *
+ * Install:
+ *   1. Copy this folder to: public/themes/pterodactyl/
+ *   2. Add the <link> tag (see README.md) to resources/views/templates/wrapper.blade.php
+ *   3. For the legacy admin area also patch resources/views/layouts/admin.blade.php
+ *
+ * No rebuild required. Loaded after the panel's own stylesheets.
+ * ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * Design tokens
+ * ------------------------------------------------------------------------- */
+:root {
+    /* Surfaces */
+    --nb-bg:            #0a0a0a;
+    --nb-bg-alt:        #111111;
+    --nb-surface:       #161616;
+    --nb-surface-2:     #1c1c1c;
+    --nb-surface-3:     #232323;
+
+    /* Lines */
+    --nb-line:          #2a2a2a;
+    --nb-line-strong:   #3d3d3d;
+
+    /* Text */
+    --nb-text:          #ededed;
+    --nb-text-dim:      #a3a3a3;
+    --nb-text-faint:    #6b6b6b;
+
+    /* Neon accents */
+    --nb-lime:          #a3e635;
+    --nb-lime-deep:     #65a30d;
+    --nb-cyan:          #22d3ee;
+    --nb-cyan-deep:     #0e7490;
+    --nb-magenta:       #f472b6;
+    --nb-magenta-deep:  #be185d;
+    --nb-yellow:        #facc15;
+    --nb-yellow-deep:   #a16207;
+    --nb-orange:        #fb923c;
+
+    /* Brutalist mechanics */
+    --nb-border:        2px;
+    --nb-radius:        3px;
+    --nb-radius-lg:     5px;
+    --nb-shadow:        5px 5px 0 rgba(163, 230, 53, .22);
+    --nb-shadow-cyan:   5px 5px 0 rgba(34, 211, 238, .22);
+    --nb-shadow-magenta:5px 5px 0 rgba(244, 114, 182, .22);
+    --nb-shadow-solid:  5px 5px 0 #000;
+    --nb-offset:        3px;
+    --nb-font:          "IBM Plex Sans", "Roboto", system-ui, -apple-system,
+                         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --nb-font-mono:     "IBM Plex Mono", ui-monospace, "SFMono-Regular",
+                         Menlo, Consolas, monospace;
+}
+
+/* ---------------------------------------------------------------------------
+ * Base
+ * ------------------------------------------------------------------------- */
+body {
+    background: var(--nb-bg) !important;
+    color: var(--nb-text) !important;
+    font-family: var(--nb-font) !important;
+    letter-spacing: .01em !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--nb-font) !important;
+    font-weight: 800 !important;
+    letter-spacing: -.02em !important;
+    text-transform: none;
+}
+
+p { color: var(--nb-text-dim) !important; }
+
+a {
+    color: var(--nb-cyan);
+    text-decoration: none;
+    transition: color .12s linear;
+}
+a:hover { color: var(--nb-lime); }
+
+::selection {
+    background: var(--nb-lime);
+    color: #0a0a0a;
+}
+
+/* Scrollbar — neon slab */
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: var(--nb-bg-alt); }
+::-webkit-scrollbar-thumb {
+    background: var(--nb-lime-deep);
+    border: 3px solid var(--nb-bg-alt);
+    border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--nb-lime); }
+::-webkit-scrollbar-corner { background: var(--nb-bg-alt); }
+
+/* ---------------------------------------------------------------------------
+ * Layout shell (utility classes used across the React app)
+ * ------------------------------------------------------------------------- */
+#app { background: var(--nb-bg); }
+
+.bg-neutral-50, .bg-neutral-100, .bg-neutral-200 { background: var(--nb-bg) !important; }
+.bg-neutral-300, .bg-neutral-400 { background: var(--nb-surface-3) !important; }
+.bg-neutral-500 { background: var(--nb-line-strong) !important; }
+.bg-neutral-600 { background: var(--nb-surface-2) !important; }
+.bg-neutral-700, .bg-neutral-800 { background: var(--nb-surface) !important; }
+.bg-neutral-900 { background: var(--nb-bg-alt) !important; }
+.bg-black { background: #000 !important; }
+
+.text-neutral-100, .text-neutral-200, .text-white { color: var(--nb-text) !important; }
+.text-neutral-300, .text-neutral-400 { color: var(--nb-text-dim) !important; }
+.text-neutral-500, .text-neutral-600 { color: var(--nb-text-faint) !important; }
+
+.border-neutral-500, .border-neutral-600 { border-color: var(--nb-line) !important; }
+.border-neutral-700, .border-neutral-800 { border-color: var(--nb-line-strong) !important; }
+
+/* Sharp corners everywhere */
+.rounded, .rounded-md, .rounded-lg, .rounded-xl, .rounded-full { border-radius: var(--nb-radius) !important; }
+
+/* Soft elevated shadows -> hard offset shadows */
+.shadow, .shadow-md, .shadow-lg, .shadow-xl { box-shadow: var(--nb-shadow) !important; }
+
+/* ---------------------------------------------------------------------------
+ * Top navigation bar
+ * ------------------------------------------------------------------------- */
+#app > div[class*="bg-neutral-900"],
+.w-full.bg-neutral-900 {
+    background: #000 !important;
+    border-bottom: var(--nb-border) solid var(--nb-lime) !important;
+    box-shadow: 0 4px 0 rgba(163, 230, 53, .14) !important;
+}
+
+#logo a {
+    color: var(--nb-lime) !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .04em !important;
+}
+#logo a:hover { color: var(--nb-cyan) !important; }
+
+/* Nav links — hard underline block on active/hover */
+#app a[class*="navigation-link"],
+#app nav a,
+.RightNavigation a,
+.RightNavigation button,
+.RightNavigation .navigation-link {
+    position: relative;
+    transition: transform .1s linear, background .12s linear !important;
+}
+.RightNavigation a:hover,
+.RightNavigation button:hover,
+.RightNavigation a.active {
+    background: var(--nb-lime) !important;
+    color: #0a0a0a !important;
+    box-shadow: none !important;
+}
+.RightNavigation a.active::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 4px;
+    background: var(--nb-magenta);
+}
+
+/* ---------------------------------------------------------------------------
+ * Buttons
+ * ------------------------------------------------------------------------- */
+button,
+.btn,
+a[class*="button"],
+[class*="button_module__button"],
+[class*="button_button__"] {
+    border: var(--nb-border) solid #000 !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, .9) !important;
+    font-weight: 700 !important;
+    letter-spacing: .02em !important;
+    transition: transform .08s linear, box-shadow .08s linear, background .12s linear !important;
+}
+button:hover,
+.btn:hover,
+a[class*="button"]:hover,
+[class*="button_module__button"]:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, .9) !important;
+}
+button:active,
+.btn:active,
+[class*="button_module__button"]:active {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, .9) !important;
+}
+
+/* Primary */
+.bg-blue-500, .bg-blue-600 {
+    background: var(--nb-lime) !important;
+    border-color: #000 !important;
+    color: #0a0a0a !important;
+}
+.bg-blue-500:hover, .bg-blue-600:hover { background: var(--nb-cyan) !important; }
+.text-blue-50 { color: #0a0a0a !important; }
+
+/* Danger */
+.bg-red-500, .bg-red-600 {
+    background: var(--nb-magenta) !important;
+    color: #0a0a0a !important;
+}
+.bg-red-500:hover, .bg-red-600:hover { background: var(--nb-magenta-deep) !important; }
+
+/* Focus ring -> hard outline */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: var(--nb-border) solid var(--nb-cyan) !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Forms / inputs
+ * ------------------------------------------------------------------------- */
+input[type="text"], input[type="email"], input[type="password"], input[type="number"],
+input[type="search"], input[type="url"], input[type="tel"], select, textarea,
+[class*="inputs_text_input"],
+[class*="text_input"] {
+    background: var(--nb-surface) !important;
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+    border-radius: var(--nb-radius) !important;
+    color: var(--nb-text) !important;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, .7) !important;
+    transition: transform .08s linear, box-shadow .08s linear, border-color .12s linear !important;
+}
+input:focus, select:focus, textarea:focus,
+[class*="inputs_text_input"]:focus,
+[class*="text_input"]:focus {
+    border-color: var(--nb-lime) !important;
+    box-shadow: 4px 4px 0 rgba(163, 230, 53, .35) !important;
+    transform: translate(-1px, -1px);
+}
+input::placeholder, textarea::placeholder { color: var(--nb-text-faint) !important; }
+
+label, [class*="Label"], [class*="label"] {
+    color: var(--nb-text-dim) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: .7rem !important;
+    letter-spacing: .08em !important;
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+    appearance: none;
+    width: 1.1rem; height: 1.1rem;
+    background: var(--nb-surface);
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+    border-radius: 2px !important;
+    cursor: pointer;
+    position: relative;
+}
+input[type="checkbox"]:checked {
+    background: var(--nb-lime);
+    border-color: var(--nb-lime) !important;
+}
+input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px; top: 1px;
+    width: 5px; height: 9px;
+    border: solid #0a0a0a;
+    border-width: 0 3px 3px 0;
+    transform: rotate(40deg);
+}
+
+/* ---------------------------------------------------------------------------
+ * Cards & containers
+ * ------------------------------------------------------------------------- */
+[class*="GreyRowBox"], [class*="TitledGreyBox"],
+[class*="ContentBox"], [class*="grey_row_box"], [class*="titled_grey_box"] {
+    background: var(--nb-surface) !important;
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: var(--nb-shadow-solid) !important;
+}
+
+[class*="grey_row_box"]:hover, [class*="GreyRowBox"]:hover {
+    border-color: var(--nb-lime) !important;
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 #000 !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Modal / dialog
+ * ------------------------------------------------------------------------- */
+[class*="dialog_overlay"], [class*="overlay"] {
+    background: rgba(0, 0, 0, .82) !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+}
+[class*="dialog_container"], [class*="Modal_Container"], [class*="container"] {
+    background: var(--nb-surface) !important;
+    border: var(--nb-border) solid var(--nb-lime) !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: 10px 10px 0 rgba(163, 230, 53, .18) !important;
+}
+[class*="dialog_button_bar"], [class*="button_bar"] {
+    background: var(--nb-surface-2) !important;
+    border-top: var(--nb-border) solid var(--nb-line) !important;
+    border-radius: 0 !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Dropdown menu
+ * ------------------------------------------------------------------------- */
+[class*="dropdown_menu"], [class*="DropdownMenu"],
+[class*="menu"], [role="menu"] {
+    background: var(--nb-surface-2) !important;
+    border: var(--nb-border) solid #000 !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, .9) !important;
+}
+[role="menuitem"]:hover, [role="menuitem"]:focus,
+[class*="dropdown_item"]:hover, [class*="DropdownItem"]:hover {
+    background: var(--nb-lime) !important;
+    color: #0a0a0a !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Tables
+ * ------------------------------------------------------------------------- */
+table {
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+    border-radius: var(--nb-radius) !important;
+    overflow: hidden;
+}
+thead th {
+    background: #000 !important;
+    color: var(--nb-lime) !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    font-size: .72rem !important;
+    letter-spacing: .08em !important;
+    border-bottom: var(--nb-border) solid var(--nb-lime) !important;
+    text-align: left;
+}
+tbody td {
+    background: var(--nb-surface) !important;
+    border-bottom: 1px solid var(--nb-line) !important;
+    color: var(--nb-text-dim) !important;
+}
+tbody tr:hover td { background: var(--nb-surface-2) !important; }
+tbody tr:last-child td { border-bottom: none !important; }
+
+/* ---------------------------------------------------------------------------
+ * Badges, pills, progress
+ * ------------------------------------------------------------------------- */
+[class*="badge"], .badge,
+[class*="Pill"], [class*="pill"],
+.bg-green-500, .bg-green-600 { background: var(--nb-lime-deep) !important; color: #0a0a0a !important; }
+.bg-yellow-500, .bg-yellow-600 { background: var(--nb-yellow) !important; color: #0a0a0a !important; }
+.bg-cyan-500, .bg-cyan-600 { background: var(--nb-cyan) !important; color: #0a0a0a !important; }
+
+[class*="progress"], [class*="ProgressBar"] {
+    background: var(--nb-surface-3) !important;
+    border: var(--nb-border) solid #000 !important;
+    border-radius: var(--nb-radius) !important;
+    overflow: hidden;
+}
+[class*="progress"] > div, [class*="ProgressBar"] > div {
+    background: var(--nb-lime) !important;
+    border-radius: 0 !important;
+}
+
+/* Spinner */
+[class*="spinner"], [class*="Spinner"] { border-color: var(--nb-line-strong) !important; }
+[class*="spinner"]::after, [class*="Spinner"]::after,
+[class*="spinner"] > div, [class*="Spinner"] > div {
+    border-top-color: var(--nb-lime) !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Tabs / sub-navigation
+ * ------------------------------------------------------------------------- */
+[class*="SubNavigation"], [class*="sub_navigation"] {
+    background: var(--nb-bg-alt) !important;
+    border-bottom: var(--nb-border) solid var(--nb-line) !important;
+}
+[class*="SubNavigation"] a.active, [class*="sub_navigation"] a.active,
+nav a.active {
+    color: var(--nb-lime) !important;
+    border-bottom: 3px solid var(--nb-lime) !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Server console / terminal
+ * ------------------------------------------------------------------------- */
+[class*="terminal"], [class*="Terminal"], [class*="console"], [class*="Console"],
+.xterm {
+    background: #000 !important;
+    border: var(--nb-border) solid var(--nb-lime-deep) !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: var(--nb-shadow-solid) !important;
+}
+.xterm .xterm-viewport { background: #000 !important; }
+.xterm .xterm-screen { background: #000 !important; }
+
+[class*="terminal"]::selection, .xterm .terminal.xterm-cursor-block::selection { background: var(--nb-lime) !important; }
+
+/* Code blocks */
+pre, code, [class*="Code"], [class*="code"] {
+    font-family: var(--nb-font-mono) !important;
+    background: #000 !important;
+    border: 1px solid var(--nb-line-strong) !important;
+    border-radius: 2px !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Pagination
+ * ------------------------------------------------------------------------- */
+[class*="pagination"] a, [class*="Pagination"] a, nav[role="navigation"] a {
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+    border-radius: var(--nb-radius) !important;
+    background: var(--nb-surface) !important;
+    color: var(--nb-text-dim) !important;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, .8) !important;
+}
+[class*="pagination"] a:hover, nav[role="navigation"] a:hover {
+    background: var(--nb-lime) !important;
+    color: #0a0a0a !important;
+    border-color: #000 !important;
+}
+[class*="pagination"] a[aria-current="page"],
+[class*="pagination"] .active a {
+    background: var(--nb-cyan) !important;
+    color: #0a0a0a !important;
+    border-color: #000 !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Tooltips
+ * ------------------------------------------------------------------------- */
+[class*="Tooltip"], [class*="tooltip"], [role="tooltip"] {
+    background: var(--nb-lime) !important;
+    color: #0a0a0a !important;
+    border: var(--nb-border) solid #000 !important;
+    border-radius: 2px !important;
+    font-weight: 700 !important;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, .9) !important;
+}
+[class*="Tooltip"]::before, [class*="tooltip"]::before,
+[class*="Tooltip"]::after, [class*="tooltip"]::after { border-color: #000 !important; }
+
+/* ---------------------------------------------------------------------------
+ * Auth pages (login / register / 2FA) — React render
+ * ------------------------------------------------------------------------- */
+#app [class*="login"], #app [class*="Login"],
+#app [class*="register"], #app [class*="Register"] {
+    background: var(--nb-surface) !important;
+    border: var(--nb-border) solid #000 !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: 8px 8px 0 rgba(163, 230, 53, .16) !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Legacy admin (AdminLTE / Bootstrap) — v1.x area
+ * ------------------------------------------------------------------------- */
+.skin-blue .wrapper,
+.skin-blue .main-header { background: var(--nb-bg) !important; }
+
+.skin-blue .main-header .logo {
+    background: var(--nb-lime) !important;
+    color: #0a0a0a !important;
+    border-bottom: var(--nb-border) solid #000 !important;
+    font-weight: 800 !important;
+}
+.skin-blue .main-header .navbar {
+    background: #000 !important;
+    border-bottom: var(--nb-border) solid var(--nb-lime) !important;
+}
+.skin-blue .main-header .navbar .sidebar-toggle:hover { background: var(--nb-lime) !important; }
+
+.skin-blue .main-sidebar,
+.skin-blue .sidebar { background: var(--nb-bg-alt) !important; }
+.skin-blue .sidebar-menu > li > a {
+    border-left: 3px solid transparent;
+    color: var(--nb-text-dim) !important;
+}
+.skin-blue .sidebar-menu > li:hover > a,
+.skin-blue .sidebar-menu > li.active > a {
+    background: var(--nb-surface-2) !important;
+    border-left: 3px solid var(--nb-lime) !important;
+    color: var(--nb-lime) !important;
+}
+
+.skin-blue .content-wrapper { background: var(--nb-bg) !important; }
+
+.skin-blue .box,
+.skin-blue .card,
+.box-primary, .card-primary {
+    background: var(--nb-surface) !important;
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: var(--nb-shadow-solid) !important;
+}
+.box-header, .card-header {
+    background: var(--nb-surface-2) !important;
+    border-bottom: var(--nb-border) solid var(--nb-line) !important;
+    color: var(--nb-text) !important;
+}
+.box-title, .card-title { color: var(--nb-lime) !important; font-weight: 800 !important; }
+
+.skin-blue .btn {
+    border: var(--nb-border) solid #000 !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, .9) !important;
+    font-weight: 700 !important;
+}
+.skin-blue .btn-primary {
+    background: var(--nb-lime) !important;
+    border-color: #000 !important;
+    color: #0a0a0a !important;
+}
+.skin-blue .btn-primary:hover { background: var(--nb-cyan) !important; }
+.skin-blue .btn-danger {
+    background: var(--nb-magenta) !important;
+    color: #0a0a0a !important;
+}
+.skin-blue .btn-default {
+    background: var(--nb-surface-2) !important;
+    color: var(--nb-text) !important;
+}
+
+.skin-blue .form-control {
+    background: var(--nb-surface) !important;
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+    border-radius: var(--nb-radius) !important;
+    color: var(--nb-text) !important;
+}
+.skin-blue .form-control:focus {
+    border-color: var(--nb-lime) !important;
+    box-shadow: none !important;
+    outline: 2px solid var(--nb-lime) !important;
+}
+
+.skin-blue .table,
+.skin-blue .table-bordered {
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+}
+.skin-blue .table > thead > tr > th {
+    background: #000 !important;
+    color: var(--nb-lime) !important;
+    border-bottom: var(--nb-border) solid var(--nb-lime) !important;
+}
+.skin-blue .table > tbody > tr > td {
+    background: var(--nb-surface) !important;
+    color: var(--nb-text-dim) !important;
+    border-top: 1px solid var(--nb-line) !important;
+}
+.skin-blue .table-hover > tbody > tr:hover > td { background: var(--nb-surface-2) !important; }
+
+.skin-blue .box-body, .card-body { color: var(--nb-text-dim) !important; }
+
+.skin-blue .alert {
+    border: var(--nb-border) solid #000 !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, .8) !important;
+    color: var(--nb-text) !important;
+}
+.alert-success { background: var(--nb-lime-deep) !important; }
+.alert-info    { background: var(--nb-cyan-deep) !important; }
+.alert-warning { background: var(--nb-yellow-deep) !important; }
+.alert-danger  { background: var(--nb-magenta-deep) !important; }
+
+/* Legacy login page (auth/login) */
+.login-page, .login-logo { background: #000 !important; }
+.login-logo a { color: var(--nb-lime) !important; font-weight: 800 !important; }
+.pterodactyl-login-box {
+    background: var(--nb-surface) !important;
+    border: var(--nb-border) solid #000 !important;
+    border-radius: var(--nb-radius) !important;
+    box-shadow: 8px 8px 0 rgba(163, 230, 53, .18) !important;
+}
+.pterodactyl-login-input > input {
+    background: var(--nb-bg-alt) !important;
+    border: var(--nb-border) solid var(--nb-line-strong) !important;
+    border-radius: var(--nb-radius) !important;
+    color: var(--nb-text) !important;
+}
+.pterodactyl-login-input > input:focus {
+    border-color: var(--nb-lime) !important;
+    outline: 2px solid var(--nb-lime) !important;
+}
+.login-copyright, .login-copyright > a { color: var(--nb-text-faint) !important; }
+
+/* Small-caps helper used by some boxes */
+[class*="uppercase"] { text-transform: uppercase !important; }
