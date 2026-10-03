@@ -8,7 +8,29 @@ Cakupan: **area klien, area admin (legacy AdminLTE), dan halaman auth** untuk Pt
 
 ## Cara pasang
 
-### Cara cepat — jalankan installer (disarankan)
+### Cara cepat — one-liner (disarankan)
+
+Tanpa `git clone` — seperti installer Pterodactyl, langsung jalankan di server panel:
+
+```bash
+# Pasang tema (mode inject)
+curl -fsSL https://raw.githubusercontent.com/Nizam169/pterodactyl-neobrutalism/main/remote-install.sh | bash
+
+# Sekalian patch source React + rebuild (hasil 100%)
+curl -fsSL https://raw.githubusercontent.com/Nizam169/pterodactyl-neobrutalism/main/remote-install.sh | bash -s -- --full
+
+# Tentukan direktori panel manual
+curl -fsSL https://raw.githubusercontent.com/Nizam169/pterodactyl-neobrutalism/main/remote-install.sh | bash -s -- -d /var/www/pterodactyl
+
+# Kembalikan ke tema default
+curl -fsSL https://raw.githubusercontent.com/Nizam169/pterodactyl-neobrutalism/main/remote-install.sh | bash -s -- --uninstall
+```
+
+Bootstrap men-download repo ke folder sementara, menjalankan installer, lalu membersihkan folder sementara otomatis. Backup file asli disimpan permanen di `/var/tmp/pterodactyl-neobrutalism/backups` (atau `$HOME/.pterodactyl-neobrutalism/backups` jika `/var/tmp` tidak bisa ditulis) sehingga uninstall tetap bisa dilakukan kemudian.
+
+> Catatan: jika `git` tidak tersedia, bootstrap otomatis memakai tarball GitHub via `curl`/`wget`.
+
+### Dari source (clone manual)
 
 Installer mendeteksi panel, membackup file asli, menyalin CSS, mempatch blade, dan membersihkan cache — sekali jalan, idempoten, dan bisa dibatalkan.
 

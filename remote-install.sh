@@ -16,11 +16,31 @@
 # =============================================================================
 set -euo pipefail
 
+# Warna
+C_RESET='\033[0m'; C_GREEN='\033[0;32m'; C_RED='\033[0;31m'; C_CYAN='\033[0;36m'; C_DIM='\033[2m'
+ok()   { printf "${C_GREEN}✓${C_RESET} %s\n" "$1"; }
+err()  { printf "${C_RED}✗${C_RESET} %s\n" "$1" >&2; }
+info() { printf "${C_CYAN}→${C_RESET} %s\n" "$1"; }
+
 REPO="Nizam169/pterodactyl-neobrutalism"
 BRANCH="main"
 
+# Backup permanen: /var/tmp di server biasa, fallback $HOME untuk Termux dll.
+# Harus di luar TMPDIR agar tidak ikut terhapus saat cleanup.
+PERSISTENT_BACKUP=""
+for cand in /var/tmp "$HOME/.pterodactyl-neobrutalism"; do
+  [[ -n "$cand" ]] || continue
+  if mkdir -p "$cand" 2>/dev/null && [[ -w "$cand" ]]; then
+    PERSISTENT_BACKUP="$cand/pterodactyl-neobrutalism/backups"; break
+  fi
+done
+if [[ -z "$PERSISTENT_BACKUP" ]]; then
+  err "Tidak ada direktori permanen yang bisa ditulis untuk backup (/var/tmp atau \$HOME)"
+  exit 1
+fi
+
 # Pilih base temp yang bisa ditulis: /tmp (server biasa), atau fallback ke TMPDIR
-# environment / $HOME (mis. Termux yang tidak punya /tmp maupun /var/tmp).
+# environment / $HOME (mis. Termux yang tidak punya /tmp).
 _base_tmp=""
 for cand in /tmp "${TMPDIR:-}" "$HOME/.cache/tmp"; do
   [[ -n "$cand" ]] || continue
@@ -28,26 +48,10 @@ for cand in /tmp "${TMPDIR:-}" "$HOME/.cache/tmp"; do
     _base_tmp="$cand"; break
   fi
 done
-[[ -n "$_base_tmp" ]] || { echo "Tidak ada direktori temp yang bisa ditulis" >&2; exit 1; }
+[[ -n "$_base_tmp" ]] || { err "Tidak ada direktori temp yang bisa ditulis"; exit 1; }
 
 TMPDIR="$(mktemp -d "${_base_tmp%/}/ptero-neobrutalism.XXXXXX")"
 INSTALL_DIR="$TMPDIR/pterodactyl-neobrutalism"
-
-# Backup permanen: /var/tmp di server biasa, fallback $HOME untuk Termux dll.
-PERSISTENT_BACKUP=""
-for cand in /var/tmp "${TMPDIR:-}" "$HOME/.pterodactyl-neobrutalism"; do
-  [[ -n "$cand" ]] || continue
-  if mkdir -p "$cand" 2>/dev/null && [[ -w "$cand" ]]; then
-    PERSISTENT_BACKUP="$cand/pterodactyl-neobrutalism/backups"; break
-  fi
-done
-[[ -n "$PERSISTENT_BACKUP" ]] || PERSISTENT_BACKUP="$_base_tmp/pterodactyl-neobrutalism-backups"
-
-# Warna
-C_RESET='\033[0m'; C_GREEN='\033[0;32m'; C_RED='\033[0;31m'; C_CYAN='\033[0;36m'
-ok()   { printf "${C_GREEN}✓${C_RESET} %s\n" "$1"; }
-err()  { printf "${C_RED}✗${C_RESET} %s\n" "$1" >&2; }
-info() { printf "${C_CYAN}→${C_RESET} %s\n" "$1"; }
 
 cleanup() { rm -rf "$TMPDIR"; }
 trap cleanup EXIT
